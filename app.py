@@ -2,8 +2,8 @@ from flask import Flask, url_for, request, redirect
 import datetime
 app = Flask(__name__)
 
-@app.route("/")
-@app.route("/web")
+@app.route("/lab1")
+@app.route("/lab1/web")
 def web():
     return '''<!doctype html>
         <html>
@@ -17,7 +17,7 @@ def web():
         }
 
 
-@app.route("/author")
+@app.route("/lab1/author")
 def author():
     name = "Шатравский Никита Дмитриевич"
     group = "ФБИ-33"
@@ -33,19 +33,28 @@ def author():
             </body>
         </html>'''
 
-@app.route("/image")
+@app.route("/lab1/image")
 def image():
-    path = url_for("static", filename = "fish.jpg")
+    image_path = url_for("static", filename="fish.jpg")
+    css_path = url_for("static", filename="lab1.css")
+    
     return '''<!doctype html>
-    <html>
-        <body>
-            <h1>Рыбка Годжо<h1>
-            <img src=" ''' + path + '''"
-        </body>
-    </html>'''
+<html>
+    <head>
+        <title>Рыбка Годжо</title>
+        <link rel="stylesheet" href="''' + css_path + '''">
+    </head>
+    <body>
+        <div class="container">
+            <h1>Рыбка Годжо</h1>
+            <img src="''' + image_path + '''" alt="Рыбка Годжо">
+            <p class="description">Lobotomy Kaisen</p>
+        </div>
+    </body>
+</html>'''
 
 count = 0
-@app.route('/counter')
+@app.route('/lab1/counter')
 def counter():
     global count
     count += 1
@@ -62,14 +71,21 @@ def counter():
         Запрошенный адрес: ''' + url + '''<br>
         Ваш IP адрес: ''' + client_ip + '''<br>
         <hr>
+        <a href="''' + url_for('reset_counter') + '''">Сбросить счетчик</a>
     </body>
 </html>'''
 
-@app.route("/info")
-def info():
-    return redirect("/author")
+@app.route('/lab1/reset_counter')
+def reset_counter():
+    global count
+    count = 0
+    return redirect(url_for('counter'))
 
-@app.route("/created")
+@app.route("/lab1/info")
+def info():
+    return redirect("/lab1/author")
+
+@app.route("/lab1/created")
 def created():
     return '''
 <!doctype html>
