@@ -5,13 +5,16 @@ app = Flask(__name__)
 @app.route("/")
 @app.route("/web")
 def web():
-    return """<!doctype html>
+    return '''<!doctype html>
         <html>
             <body>
-                <h1>wtb-cервер на flask</h1>
+                <h1>web-cервер на flask</h1>
                 <a href="/author">author</a>
             <body>
-        </html>"""
+        </html>''', 200, {
+            'X-Server': 'sample',
+            'Content-Type': 'text/plain; charset=utf-8'
+        }
 
 
 @app.route("/author")
