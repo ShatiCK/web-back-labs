@@ -391,3 +391,12 @@ def server_error_test():
     
     result = 10 / 0
     return f"Результат: {result}"
+
+
+@app.route('/lab2/a')
+def a():
+    return 'без слэша'
+
+@app.route('/lab2/a/')
+def a2():
+    return 'со слэшом'
