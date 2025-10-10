@@ -1,15 +1,48 @@
 {% extends "base.html" %}
 
-{# номер лабораторной работы: #}
 {% block lab %}Лабораторная работа 2{% endblock %}
 
-{# основной контент: #}
 {% block main %}
     <h1>Шаблоны</h1>
     <div>Тема лабораторной - шаблоны. Список сделанных страниц:</div>
-    <ol>
-        <li>
-            <a href="/lab2/example">example</a>
-        </li>
-    </ol>
+    
+    <h2>Основные задания (шаблоны):</h2>
+    <ul>
+        <li><a href="/lab2/example">example</a> - пример с шаблоном и вычислениями</li>
+        <li><a href="/lab2/filters">filters</a> - фильтры шаблонов</li>
+        <li><a href="/lab2/books">books</a> - список книг</li>
+        <li><a href="/lab2/berries">berries</a> - галерея ягод</li>
+    </ul>
+
+    <h2>Слэши в адресах:</h2>
+    <ul>
+        <li><a href="/lab2/a">/lab2/a</a> - без слэша</li>
+        <li><a href="/lab2/a/">/lab2/a/</a> - со слэшом</li>
+    </ul>
+
+    <h2>Работа с цветами:</h2>
+    <ul>
+        <li><a href="/lab2/flowers/0">/lab2/flowers/0</a> - цветок по ID (роза)</li>
+        <li><a href="/lab2/flowers/1">/lab2/flowers/1</a> - цветок по ID (тюльпан)</li>
+        <li><a href="/lab2/flowers/2">/lab2/flowers/2</a> - цветок по ID (незабудка)</li>
+        <li><a href="/lab2/flowers/3">/lab2/flowers/3</a> - цветок по ID (ромашка)</li>
+        <li><a href="/lab2/flowers/10">/lab2/flowers/10</a> - ошибка 404 (нет цветка)</li>
+        <li><a href="/lab2/flowers_list">/lab2/flowers_list</a> - список всех цветов</li>
+        <li><a href="/lab2/add_flower/орхидея">/lab2/add_flower/орхидея</a> - добавить цветок</li>
+        <li><a href="/lab2/add_flower/">/lab2/add_flower/</a> - ошибка 400 (нет имени)</li>
+        <li><a href="/lab2/clear_flowers">/lab2/clear_flowers</a> - очистить все цветы</li>
+    </ul>
+
+    <h2>Калькулятор:</h2>
+    <ul>
+        <li><a href="/lab2/calc/">/lab2/calc/</a> - калькулятор (по умолчанию 1/1)</li>
+        <li><a href="/lab2/calc/10">/lab2/calc/10</a> - калькулятор с одним числом (10/1)</li>
+        <li><a href="/lab2/calc/15/3">/lab2/calc/15/3</a> - калькулятор с числами 15 и 3</li>
+        <li><a href="/lab2/calc/5/0">/lab2/calc/5/0</a> - деление на ноль (ошибка)</li>
+    </ul>
+
+    <h2>Наследование шаблонов:</h2>
+    <ul>
+        <li><a href="/lab2/">/lab2/</a> - главная страница лабораторной</li>
+    </ul>
 {% endblock %}

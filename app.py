@@ -19,6 +19,7 @@ def index():
         <main>
             <menu>
                 <li><a href="''' + url_for('lab1') + '''">Первая лабораторная</a></li>
+                <li><a href="''' + url_for('lab2') + '''">Вторая лабораторная</a></li>
             </menu>
         </main>
         <footer>
