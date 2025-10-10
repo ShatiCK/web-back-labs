@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block lab %}Лабораторная работа 2{% endblock %}
+
+{% block main %}
+    <h1>Галерея ягод</h1>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
+        {% for berry in berries %}
+        <div style="border: 1px solid #ddd; padding: 15px; border-radius: 8px; text-align: center;">
+            <img src="{{ url_for('static', filename=berry.img) }}" 
+                 alt="{{ berry.name }}" 
+                 style="width: 200px; height: 150px; object-fit: cover; border-radius: 5px;">
+            <h3>{{ berry.name }}</h3>
+            <p>{{ berry.desc }}</p>
+        </div>
+        {% endfor %}
+    </div>
+{% endblock %}
