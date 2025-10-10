@@ -533,3 +533,21 @@ def calc(a, b):
     </body>
 </html>
 '''
+
+
+books = [
+    {"author": "Анджей Сапковский", "title": "Ведьмак: Последнее желание", "genre": "Фэнтези", "pages": 320},
+    {"author": "Анджей Сапковский", "title": "Ведьмак: Меч Предназначения", "genre": "Фэнтези", "pages": 384},
+    {"author": "Сергей Минаев", "title": "Духless: Повесть о ненастоящем человеке", "genre": "Роман", "pages": 320},
+    {"author": "Сергей Минаев", "title": "The Тёлки", "genre": "Роман", "pages": 416},
+    {"author": "Джозеф Кэмпбелл", "title": "Тысячеликий герой", "genre": "Мифология", "pages": 384},
+    {"author": "Джозеф Кэмпбелл", "title": "Сила мифа", "genre": "Мифология", "pages": 272},
+    {"author": "Айзек Азимов", "title": "Я, робот", "genre": "Научная фантастика", "pages": 320},
+    {"author": "Айзек Азимов", "title": "Основание", "genre": "Научная фантастика", "pages": 256},
+    {"author": "Рэй Брэдбери", "title": "451° по Фаренгейту", "genre": "Антиутопия", "pages": 256},
+    {"author": "Джордж Оруэлл", "title": "1984", "genre": "Антиутопия", "pages": 320}
+]
+
+@app.route('/lab2/books')
+def show_books():
+    return render_template('books.html', books=books)
