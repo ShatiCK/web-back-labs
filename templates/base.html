@@ -5,11 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Шатравский Никита. {% block lab %}{% endblock %}</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
 </head>
 <body>
     <header>
         <nav style="margin-bottom: 10px;">
-            <a href="/">Главное меню</a> | 
+            <a href="/">Главное меню</a>
         </nav>
         WEB-программирование, часть 2. {{ self.lab() }}
     </header>

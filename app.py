@@ -11,6 +11,7 @@ def index():
 <html>
     <head>
         <title>НГТУ, ФБ, Лабораторные работы</title>
+        <link rel="icon" href="/static/favicon.ico" type="image/x-icon">
     </head>
     <body>
         <header>
@@ -34,6 +35,7 @@ def lab1():
 <html>
     <head>
         <title>Лабораторная 1</title>
+        <link rel="icon" href="/static/favicon.ico" type="image/x-icon">
     </head>
     <body>
         <header>
