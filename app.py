@@ -572,3 +572,46 @@ berries = [
 @app.route('/lab2/berries')
 def show_berries():
     return render_template('berries.html', berries=berries)
+
+
+
+flowers_with_prices = [
+    {"name": "роза", "price": 300},
+    {"name": "тюльпан", "price": 310},
+    {"name": "незабудка", "price": 320},
+    {"name": "ромашка", "price": 330}
+]
+
+
+@app.route('/lab2/flowers_dop')
+def show_flowers_dop():
+    return render_template('flowers.html', flowers=flowers_with_prices)
+
+
+@app.route('/lab2/flowers_dop/delete/<int:flower_id>')
+def delete_flower(flower_id):
+    if flower_id < 0 or flower_id >= len(flowers_with_prices):
+        abort(404)
+    
+    flowers_with_prices.pop(flower_id)
+    return redirect(url_for('show_flowers_dop'))
+
+
+@app.route('/lab2/flowers_dop/clear')
+def clear_flowers_dop():
+    flowers_with_prices.clear()
+    return redirect(url_for('show_flowers_dop'))
+
+
+@app.route('/lab2/flowers_dop/add', methods=['POST'])
+def add_flower_dop():
+    name = request.form.get('name')
+    price = request.form.get('price')
+    
+    if not name:
+        return "Вы не задали имя цветка", 400
+    if not price or not price.isdigit():
+        return "Цена должна быть числом", 400
+        
+    flowers_with_prices.append({"name": name, "price": int(price)})
+    return redirect(url_for('show_flowers_dop'))
