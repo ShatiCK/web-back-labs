@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block lab %}Лабораторная работа 3{% endblock %}
+
+{% block main %}
+    <h1>Железнодорожный билет</h1>
+
+    <div style="border: 2px solid #333; padding: 20px; max-width: 600px; background: #f9f9f9;">
+        <h2 style="text-align: center; color: #2c5aa0;">БИЛЕТ №{{ range(1000, 9999) | random }}</h2>
+        
+        <div style="margin: 15px 0;">
+            <strong>Пассажир:</strong> {{ fio }}
+        </div>
+        
+        <div style="margin: 15px 0;">
+            <strong>Маршрут:</strong> {{ departure }} → {{ destination }}
+        </div>
+        
+        <div style="margin: 15px 0;">
+            <strong>Дата:</strong> {{ date }}
+        </div>
+        
+        <div style="margin: 15px 0;">
+            <strong>Тип билета:</strong> {{ ticket_type }}
+        </div>
+        
+        <div style="margin: 15px 0;">
+            <strong>Полка:</strong> 
+            {% if shelf == 'upper' %}Верхняя
+            {% elif shelf == 'lower' %}Нижняя
+            {% elif shelf == 'upper_side' %}Верхняя боковая
+            {% elif shelf == 'lower_side' %}Нижняя боковая
+            {% endif %}
+        </div>
+        
+        <div style="margin: 15px 0;">
+            <strong>Дополнительные услуги:</strong>
+            <ul>
+                {% if linen == 'on' %}<li>Бельё</li>{% endif %}
+                {% if baggage == 'on' %}<li>Багаж</li>{% endif %}
+                {% if insurance == 'on' %}<li>Страховка</li>{% endif %}
+                {% if not linen == 'on' and not baggage == 'on' and not insurance == 'on' %}
+                    <li>Нет дополнительных услуг</li>
+                {% endif %}
+            </ul>
+        </div>
+        
+        <div style="margin: 15px 0; border-top: 1px solid #ccc; padding-top: 10px;">
+            <strong>Расчет стоимости:</strong><br>
+            - Базовая стоимость: {{ ticket_type }}<br>
+            {% for addition in additions %}
+            - {{ addition }}<br>
+            {% endfor %}
+        </div>
+        
+        <div style="margin: 15px 0; font-size: 24px; color: green; text-align: center;">
+            <strong>Итого к оплате: {{ base_price }} руб.</strong>
+        </div>
+    </div>
+
+    <div style="margin-top: 20px;">
+        <a href="/lab3/ticket">Оформить новый билет</a>
+    </div>
+{% endblock %}
