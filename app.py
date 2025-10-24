@@ -1,6 +1,12 @@
 from flask import Flask, url_for, request, redirect, abort, render_template
-import datetime
+from datetime import datetime
+from lab1 import lab1
+from lab2 import lab2
+from lab3 import lab3
 app = Flask(__name__)
+app.register_blueprint(lab1)
+app.register_blueprint(lab2)
+app.register_blueprint(lab3)
 
 
 
@@ -19,8 +25,9 @@ def index():
         </header>
         <main>
             <menu>
-                <li><a href="''' + url_for('lab1') + '''">Первая лабораторная</a></li>
-                <li><a href="''' + url_for('lab2') + '''">Вторая лабораторная</a></li>
+                <li><a href="''' + url_for('lab1.lab') + '''">Первая лабораторная</a></li>
+                <li><a href="''' + url_for('lab2.lab') + '''">Вторая лабораторная</a></li>
+                <li><a href="''' + url_for('lab3.lab') + '''">Третья лабораторная</a></li>
             </menu>
         </main>
         <footer>
@@ -29,154 +36,7 @@ def index():
     </body>
 </html>'''
 
-@app.route("/lab1")
-def lab1():
-    return '''<!doctype html>
-<html>
-    <head>
-        <title>Лабораторная 1</title>
-        <link rel="icon" href="/static/favicon.ico" type="image/x-icon">
-    </head>
-    <body>
-        <header>
-            НГТУ, ФБ, WEB-программирование, часть 2. Список лабораторных
-        </header>
-        <main>
-            <h1>Первая лабораторная работа</h1>
-            
-            <p>Flask — фреймворк для создания веб-приложений на языке
-            программирования Python, использующий набор инструментов
-            Werkzeug, а также шаблонизатор Jinja2. Относится к категории так
-            называемых микрофреймворков — минималистичных каркасов
-            веб-приложений, сознательно предоставляющих лишь самые ба-
-            зовые возможности.</p>
-            
-            <a href="''' + url_for('index') + '''">Вернуться на главную</a>
-            
-            <h2>Список роутов</h2>
-            <ul>
-                <li><a href="''' + url_for('web') + '''">Web-сервер на Flask</a></li>
-                <li><a href="''' + url_for('author') + '''">Об авторе</a></li>
-                <li><a href="''' + url_for('image') + '''">Изображение</a></li>
-                <li><a href="''' + url_for('counter') + '''">Счетчик посещений</a></li>
-                <li><a href="''' + url_for('info') + '''">Перенаправление</a></li>
-                <li><a href="''' + url_for('created') + '''">Создано</a></li>
-                <li><a href="''' + url_for('unauthorized') + '''">401</a></li>
-                <li><a href="''' + url_for('payment_required') + '''">402</a></li>
-                <li><a href="''' + url_for('forbidden') + '''">403</a></li>
-                <li><a href="''' + url_for('method_not_allowed') + '''">405</a></li>
-                <li><a href="''' + url_for('teapot') + '''">418</a></li>
-                <li><a href="''' + url_for('server_error_test') + '''">Тест ошибки 500</a></li>
-            </ul>
-        </main>
-        <footer>
-            Шатравский Никита Дмитриевич, ФБИ-33, 3 курс, 2025
-        </footer>
-    </body>
-</html>'''
 
-
-@app.route("/lab1/web")
-def web():
-    return '''<!doctype html>
-        <html>
-            <body>
-                <h1>web-cервер на flask</h1>
-                <a href="/lab1/author">author</a>
-            <body>
-        </html>''', 200, {
-            'X-Server': 'sample',
-            'Content-Type': 'text/plain; charset=utf-8'
-        }
-
-
-@app.route("/lab1/author")
-def author():
-    name = "Шатравский Никита Дмитриевич"
-    group = "ФБИ-33"
-    faculty = "ФБ"
-
-    return '''<!doctype html>
-        <html>
-            <body>
-                <p>Студент: ''' + name + '''</p>
-                <p>Группа: ''' + group + '''</p>
-                <p>Факультет: ''' + faculty + '''</p>
-                <a href="/lab1/web">web</a>
-            </body>
-        </html>'''
-
-@app.route("/lab1/image")
-def image():
-    image_path = url_for("static", filename="fish.jpg")
-    css_path = url_for("static", filename="lab1.css")
-    
-    html_content = f'''<!doctype html>
-<html>
-    <head>
-        <title>Рыбка Годжо</title>
-        <link rel="stylesheet" href="{css_path}">
-    </head>
-    <body>
-        <div class="container">
-            <h1>Рыбка Годжо</h1>
-            <img src="{image_path}" alt="Рыбка Годжо">
-            <p class="description">Lobotomy Kaisen</p>
-        </div>
-    </body>
-</html>'''
-    
-    
-    return html_content, 200, {
-        "Content-Language": "ru",              
-        "X-Author": "Shatravskiy Nikita",       
-        "X-Project": "LAB1",         
-        "Content-Type": "text/html; charset=utf-8"
-    }
-
-count = 0
-@app.route('/lab1/counter')
-def counter():
-    global count
-    count += 1
-    time = str(datetime.datetime.today())
-    url = request.url
-    client_ip = request.remote_addr
-    return '''
-<!doctype html>
-<html>
-    <body>
-        Сколько раз вы сюда заходили: ''' + str(count) + '''
-        <hr>
-        Дата и время: ''' + time + '''<br>
-        Запрошенный адрес: ''' + url + '''<br>
-        Ваш IP адрес: ''' + client_ip + '''<br>
-        <hr>
-        <a href="''' + url_for('reset_counter') + '''">Сбросить счетчик</a>
-    </body>
-</html>'''
-
-@app.route('/lab1/reset_counter')
-def reset_counter():
-    global count
-    count = 0
-    return redirect(url_for('counter'))
-
-@app.route("/lab1/info")
-def info():
-    return redirect("/lab1/author")
-
-@app.route("/lab1/created")
-def created():
-    return '''
-<!doctype html>
-<html>
-    <body>
-        <h1>Создано успешно</h1>
-        <div><i>что-то создано</i></div>
-    </body>
-</html>
-''', 201
 
 
 not_found_logs = []
@@ -184,7 +44,7 @@ not_found_logs = []
 @app.errorhandler(404)
 def not_found(err):
     client_ip = request.remote_addr
-    access_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    access_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     requested_url = request.url
     
     
@@ -262,7 +122,7 @@ def not_found(err):
 
 
 
-@app.route("/lab1/400")
+@app.route("/400")
 def bad_request():
     return '''
 <!doctype html>
@@ -276,7 +136,7 @@ def bad_request():
 ''', 400
 
 
-@app.route("/lab1/401")
+@app.route("/401")
 def unauthorized():
     return '''
 <!doctype html>
@@ -290,7 +150,7 @@ def unauthorized():
 ''', 401
 
 
-@app.route("/lab1/402")
+@app.route("/402")
 def payment_required():
     return '''
 <!doctype html>
@@ -304,7 +164,7 @@ def payment_required():
 ''', 402
 
 
-@app.route("/lab1/403")
+@app.route("/403")
 def forbidden():
     return '''
 <!doctype html>
@@ -318,7 +178,7 @@ def forbidden():
 ''', 403
 
 
-@app.route("/lab1/405")
+@app.route("/405")
 def method_not_allowed():
     return '''
 <!doctype html>
@@ -332,7 +192,7 @@ def method_not_allowed():
 ''', 405
 
 
-@app.route("/lab1/418")
+@app.route("/418")
 def teapot():
     return '''
 <!doctype html>
@@ -394,224 +254,3 @@ def server_error_test():
     
     result = 10 / 0
     return f"Результат: {result}"
-
-
-@app.route('/lab2/a')
-def a():
-    return 'без слэша'
-
-@app.route('/lab2/a/')
-def a2():
-    return 'со слэшом'
-
-
-
-flower_list = ['роза', 'тюльпан', 'незабудка', 'ромашка']
-@app.route('/lab2/flowers/<int:flower_id>')
-def flowers(flower_id):
-    if flower_id >= len(flower_list):
-        abort(404)
-    else:
-        return "цветок: " + flower_list[flower_id]
-
-@app.route('/lab2/add_flower/<name>')
-def add_flower(name):
-    flower_list.append(name)
-    return f'''
-<!DOCTYPE html>
-<html>
-    <body>
-        <h1>Добавлен цветок</h1>
-        <p>Название нового цветка: {name}</p>
-        <p>Всего цветов: {len(flower_list)}</p>
-        <p>Полный список: {flower_list}</p>
-    </body>
-</html>
-'''
-
-
-@app.route('/lab2/example')
-def example():
-    name = 'Шатравский Никита'
-    lab_num = '2'
-    group = 'ФБИ-33'
-    kurs = '3'
-    fruits = [
-        {'name': 'яблоки', 'price': 100},
-        {'name': 'груши', 'price': 120},
-        {'name': 'апельсины', 'price': 80},
-        {'name': 'мандарины', 'price': 95},
-        {'name': 'манго', 'price': 321}
-    ]
-    return render_template('example.html', 
-                         name=name, 
-                         lab_num=lab_num, 
-                         group=group, 
-                         kurs=kurs,
-                         fruits=fruits)
-
-
-@app.route('/lab2/')
-def lab2():
-    return render_template('lab2.html')
-
-
-@app.route('/lab2/filters')
-def filters():
-    phrase = "О сколько нам открытий чудных..."
-    return render_template('filters.html', phrase=phrase)
-
-
-@app.route('/lab2/add_flower/')
-def add_flower_no_name():
-    return '''
-<!DOCTYPE html>
-<html>
-    <body>
-        <h1>Ошибка 400</h1>
-        <p style="color:red;">Вы не задали имя цветка!</p>
-        <p><a href="/lab2/flowers_list">Посмотреть все цветы</a></p>
-    </body>
-</html>
-''', 400
-
-@app.route('/lab2/flowers_list')
-def show_flowers():
-    flowers_html = "<ul>" + "".join([f"<li>{f}</li>" for f in flower_list]) + "</ul>"
-    return f'''
-<!DOCTYPE html>
-<html>
-    <body>
-        <h1>Список всех цветов</h1>
-        <p>Всего цветов: {len(flower_list)}</p>
-        {flowers_html}
-        <p><a href="/lab2/clear_flowers">Очистить все цветы</a></p>
-    </body>
-</html>
-'''
-
-@app.route('/lab2/clear_flowers')
-def clear_flowers():
-    flower_list.clear()
-    return '''
-<!DOCTYPE html>
-<html>
-    <body>
-        <h1>Список цветов очищен</h1>
-        <p><a href="/lab2/flowers_list">Посмотреть все цветы</a></p>
-    </body>
-</html>
-'''
-
-@app.route('/lab2/calc/')
-def calc_default():
-    return redirect('/lab2/calc/1/1')
-
-@app.route('/lab2/calc/<int:a>')
-def calc_one_arg(a):
-    return redirect(f'/lab2/calc/{a}/1')
-
-@app.route('/lab2/calc/<int:a>/<int:b>')
-def calc(a, b):
-    if b == 0:
-        div_result = "Ошибка: деление на ноль"
-    else:
-        div_result = a / b
-    
-    return f'''
-<!DOCTYPE html>
-<html>
-    <body>
-        <h1>Калькулятор</h1>
-        <p>Первое число: {a}</p>
-        <p>Второе число: {b}</p>
-        <ul>
-            <li>Сумма: {a + b}</li>
-            <li>Разность: {a - b}</li>
-            <li>Произведение: {a * b}</li>
-            <li>Деление: {div_result}</li>
-            <li>Возведение в степень: {a ** b}</li>
-        </ul>
-        <p><a href="/lab2/calc/">Попробовать снова с 1 и 1</a></p>
-    </body>
-</html>
-'''
-
-
-books = [
-    {"author": "Анджей Сапковский", "title": "Ведьмак: Последнее желание", "genre": "Фэнтези", "pages": 320},
-    {"author": "Анджей Сапковский", "title": "Ведьмак: Меч Предназначения", "genre": "Фэнтези", "pages": 384},
-    {"author": "Сергей Минаев", "title": "Духless: Повесть о ненастоящем человеке", "genre": "Роман", "pages": 320},
-    {"author": "Сергей Минаев", "title": "The Тёлки", "genre": "Роман", "pages": 416},
-    {"author": "Джозеф Кэмпбелл", "title": "Тысячеликий герой", "genre": "Мифология", "pages": 384},
-    {"author": "Джозеф Кэмпбелл", "title": "Сила мифа", "genre": "Мифология", "pages": 272},
-    {"author": "Айзек Азимов", "title": "Я, робот", "genre": "Научная фантастика", "pages": 320},
-    {"author": "Айзек Азимов", "title": "Основание", "genre": "Научная фантастика", "pages": 256},
-    {"author": "Рэй Брэдбери", "title": "451° по Фаренгейту", "genre": "Антиутопия", "pages": 256},
-    {"author": "Джордж Оруэлл", "title": "1984", "genre": "Антиутопия", "pages": 320}
-]
-
-@app.route('/lab2/books')
-def show_books():
-    return render_template('books.html', books=books)
-
-
-berries = [
-    {"name": "Арбуз", "img": "berry1.jpg", "desc": "Крупная сладкая ягода с красной мякотью и чёрными семенами."},
-    {"name": "Черника", "img": "berry2.jpg", "desc": "Сине-фиолетовая ягода с кисло-сладким вкусом и массой витаминов."},
-    {"name": "Клубника", "img": "berry3.jpg", "desc": "Сочный и ароматный ягода, популярный по всей стране."},
-    {"name": "Клюква", "img": "berry4.jpg", "desc": "Кислая болотная ягода, используется при простуде и воспалениях."},
-    {"name": "Смородина", "img": "berry5.jpg", "desc": "Чёрная или красная ягода с кисло-сладким вкусом, богата витамином С."},
-    {"name": "Красная смородина", "img": "berry6.jpg", "desc": "Мелкие ярко-красные ягоды с освежающим кисловатым вкусом."},
-    {"name": "Малина", "img": "berry7.jpg", "desc": "Нежная и ароматная ягода, часто используется при простуде."},
-    {"name": "Облепиха", "img": "berry8.jpg", "desc": "Оранжевая ягода с терпким вкусом и мощными лечебными свойствами."},
-    {"name": "Земляника", "img": "berry9.jpg", "desc": "Сорт садовой земляники, крупная и ароматная."},
-    {"name": "Ежевика", "img": "berry10.jpg", "desc": "Тёмно-фиолетовая ягода с насыщенным вкусом и антоцианами."}
-]
-
-@app.route('/lab2/berries')
-def show_berries():
-    return render_template('berries.html', berries=berries)
-
-
-
-flowers_with_prices = [
-    {"name": "роза", "price": 300},
-    {"name": "тюльпан", "price": 310},
-    {"name": "незабудка", "price": 320},
-    {"name": "ромашка", "price": 330}
-]
-
-
-@app.route('/lab2/flowers_dop')
-def show_flowers_dop():
-    return render_template('flowers.html', flowers=flowers_with_prices)
-
-
-@app.route('/lab2/flowers_dop/delete/<int:flower_id>')
-def delete_flower(flower_id):
-    if flower_id < 0 or flower_id >= len(flowers_with_prices):
-        abort(404)
-    
-    flowers_with_prices.pop(flower_id)
-    return redirect(url_for('show_flowers_dop'))
-
-
-@app.route('/lab2/flowers_dop/clear')
-def clear_flowers_dop():
-    flowers_with_prices.clear()
-    return redirect(url_for('show_flowers_dop'))
-
-
-@app.route('/lab2/flowers_dop/add', methods=['POST'])
-def add_flower_dop():
-    name = request.form.get('name')
-    price = request.form.get('price')
-    
-    if not name:
-        return "Вы не задали имя цветка", 400
-    if not price or not price.isdigit():
-        return "Цена должна быть числом", 400
-        
-    flowers_with_prices.append({"name": name, "price": int(price)})
-    return redirect(url_for('show_flowers_dop'))

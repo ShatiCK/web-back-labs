@@ -9,7 +9,7 @@
         {% for flower in flowers %}
         <div style="padding: 10px; border-bottom: 1px solid #ddd;">
             {{ loop.index }}. {{ flower.name }} - {{ flower.price }} руб 
-            <a href="{{ url_for('delete_flower', flower_id=loop.index0) }}" 
+            <a href="{{ url_for('lab2.delete_flower', flower_id=loop.index0) }}" 
                style="color: red; margin-left: 15px; text-decoration: none;">
                удалить
             </a>
@@ -20,7 +20,7 @@
     </div>
 
     <div style="margin-bottom: 20px;">
-        <a href="{{ url_for('clear_flowers_dop') }}" 
+        <a href="{{ url_for('lab2.clear_flowers_dop') }}" 
            style="color: red; font-weight: bold; text-decoration: none;">
             Удалить все цветы
         </a>
@@ -28,15 +28,17 @@
 
     <div style="border: 1px solid #ddd; padding: 15px; background: #f9f9f9;">
         <h3>Добавить цветок:</h3>
-        <form action="{{ url_for('add_flower_dop') }}" method="post">
-            <input type="text" name="name" placeholder="Название цветка" required 
-                   style="padding: 8px; margin-right: 10px; width: 200px;">
-            <input type="number" name="price" placeholder="Цена" required 
-                   style="padding: 8px; margin-right: 10px; width: 100px;">
-            <button type="submit" 
-                    style="padding: 8px 15px; background: #4CAF50; color: white; border: none; border-radius: 4px;">
-                добавить
-            </button>
+        <form action="{{ url_for('lab2.add_flower_dop') }}" method="post">
+            <div style="margin-bottom: 10px;">
+                <input type="text" name="name" placeholder="Название цветка" required 
+                       style="padding: 8px; margin-right: 10px; width: 200px;">
+                <input type="number" name="price" placeholder="Цена" required 
+                       style="padding: 8px; margin-right: 10px; width: 100px;">
+                <button type="submit" 
+                        style="padding: 8px 15px; background: #4CAF50; color: white; border: none; border-radius: 4px;">
+                    добавить
+                </button>
+            </div>
         </form>
     </div>
 
