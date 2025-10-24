@@ -4,7 +4,7 @@ lab2 = Blueprint('lab2', __name__)
 
 @lab2.route('/lab2/')
 def lab():
-    return render_template('lab2.html')
+    return render_template('lab2/lab2.html')
 
 @lab2.route('/lab2/a')
 def a():
@@ -51,7 +51,7 @@ def example():
         {'name': 'мандарины', 'price': 95},
         {'name': 'манго', 'price': 321}
     ]
-    return render_template('example.html', 
+    return render_template('lab2/example.html', 
                          name=name, 
                          lab_num=lab_num, 
                          group=group, 
@@ -61,7 +61,7 @@ def example():
 @lab2.route('/lab2/filters')
 def filters():
     phrase = "О сколько нам открытий чудных..."
-    return render_template('filters.html', phrase=phrase)
+    return render_template('lab2/filters.html', phrase=phrase)
 
 @lab2.route('/lab2/add_flower/')
 def add_flower_no_name():
@@ -153,7 +153,7 @@ books = [
 
 @lab2.route('/lab2/books')
 def show_books():
-    return render_template('books.html', books=books)
+    return render_template('lab2/books.html', books=books)
 
 berries = [
     {"name": "Арбуз", "img": "lab2/berry1.jpg", "desc": "Крупная сладкая ягода с красной мякотью и чёрными семенами."},
@@ -170,7 +170,7 @@ berries = [
 
 @lab2.route('/lab2/berries')
 def show_berries():
-    return render_template('berries.html', berries=berries)
+    return render_template('lab2/berries.html', berries=berries)
 
 flowers_with_prices = [
     {"name": "роза", "price": 300},
@@ -181,7 +181,7 @@ flowers_with_prices = [
 
 @lab2.route('/lab2/flowers_dop')
 def show_flowers_dop():
-    return render_template('flowers.html', flowers=flowers_with_prices)
+    return render_template('lab2/flowers.html', flowers=flowers_with_prices)
 
 @lab2.route('/lab2/flowers_dop/delete/<int:flower_id>')
 def delete_flower(flower_id):
