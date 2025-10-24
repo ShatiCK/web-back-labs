@@ -222,3 +222,121 @@ def clear_settings():
     resp.delete_cookie('bg_color')
     resp.delete_cookie('font_size')
     return resp
+
+
+# Список товаров (компьютерные игры)
+products = [
+    {"name": "Cyberpunk 2077: Phantom Liberty", "price": 2999, "brand": "CD Projekt Red", "genre": "RPG", "platform": "PC/PS5/XSX"},
+    {"name": "Baldur's Gate 3", "price": 3499, "brand": "Larian Studios", "genre": "RPG", "platform": "PC/PS5/XSX"},
+    {"name": "Elden Ring", "price": 3999, "brand": "FromSoftware", "genre": "RPG", "platform": "PC/PS4/PS5/XBOX"},
+    {"name": "Call of Duty: Modern Warfare III", "price": 4499, "brand": "Activision", "genre": "Шутер", "platform": "PC/PS4/PS5/XBOX"},
+    {"name": "Starfield", "price": 3799, "brand": "Bethesda", "genre": "RPG", "platform": "PC/XSX"},
+    {"name": "The Legend of Zelda: Tears of the Kingdom", "price": 4999, "brand": "Nintendo", "genre": "Приключения", "platform": "Switch"},
+    {"name": "Marvel's Spider-Man 2", "price": 4599, "brand": "Insomniac", "genre": "Экшен", "platform": "PS5"},
+    {"name": "Hogwarts Legacy", "price": 3299, "brand": "Avalanche", "genre": "RPG", "platform": "PC/PS4/PS5/XBOX/Switch"},
+    {"name": "Diablo IV", "price": 4199, "brand": "Blizzard", "genre": "RPG", "platform": "PC/PS4/PS5/XBOX"},
+    {"name": "Resident Evil 4 Remake", "price": 3699, "brand": "Capcom", "genre": "Хоррор", "platform": "PC/PS4/PS5/XSX"},
+    {"name": "God of War Ragnarök", "price": 4799, "brand": "Santa Monica", "genre": "Экшен", "platform": "PS4/PS5"},
+    {"name": "Forza Motorsport", "price": 3899, "brand": "Turn 10", "genre": "Гонки", "platform": "PC/XSX"},
+    {"name": "Alan Wake 2", "price": 3199, "brand": "Remedy", "genre": "Хоррор", "platform": "PC/PS5/XSX"},
+    {"name": "Street Fighter 6", "price": 3499, "brand": "Capcom", "genre": "Файтинг", "platform": "PC/PS4/PS5/XBOX"},
+    {"name": "Dead Space Remake", "price": 3999, "brand": "Motive", "genre": "Хоррор", "platform": "PC/PS5/XSX"},
+    {"name": "Final Fantasy XVI", "price": 4699, "brand": "Square Enix", "genre": "RPG", "platform": "PS5"},
+    {"name": "Armored Core VI: Fires of Rubicon", "price": 3799, "brand": "FromSoftware", "genre": "Экшен", "platform": "PC/PS4/PS5/XBOX"},
+    {"name": "Star Wars Jedi: Survivor", "price": 4299, "brand": "Respawn", "genre": "Экшен", "platform": "PC/PS5/XSX"},
+    {"name": "The Last of Us Part I", "price": 4599, "brand": "Naughty Dog", "genre": "Экшен", "platform": "PC/PS5"},
+    {"name": "Red Dead Redemption 2", "price": 2999, "brand": "Rockstar", "genre": "Экшен", "platform": "PC/PS4/XBOX"},
+    {"name": "The Witcher 3: Wild Hunt", "price": 1499, "brand": "CD Projekt Red", "genre": "RPG", "platform": "PC/PS4/PS5/XBOX/Switch"},
+    {"name": "Grand Theft Auto V", "price": 1999, "brand": "Rockstar", "genre": "Экшен", "platform": "PC/PS4/PS5/XBOX"},
+    {"name": "Minecraft", "price": 999, "brand": "Mojang", "genre": "Песочница", "platform": "PC/PS4/XBOX/Switch/Mobile"},
+    {"name": "Stray", "price": 1799, "brand": "BlueTwelve", "genre": "Приключения", "platform": "PC/PS4/PS5"},
+    {"name": "It Takes Two", "price": 2199, "brand": "Hazelight", "genre": "Приключения", "platform": "PC/PS4/PS5/XBOX/Switch"}
+]
+
+
+@lab3.route('/lab3/products')
+def products_search():
+    # Получаем параметры из запроса
+    min_price = request.args.get('min_price', '')
+    max_price = request.args.get('max_price', '')
+    reset = request.args.get('reset')
+    
+    # Если нажата кнопка сброс, очищаем куки и параметры
+    if reset:
+        resp = make_response(redirect('/lab3/products'))
+        resp.delete_cookie('min_price')
+        resp.delete_cookie('max_price')
+        return resp
+    
+    # Фильтрация товаров
+    filtered_products = []
+    
+    if min_price or max_price:
+        try:
+            # Преобразуем в числа, если поля не пустые
+            min_val = float(min_price) if min_price else 0
+            max_val = float(max_price) if max_price else float('inf')
+            
+            # Если пользователь перепутал min и max, меняем местами
+            if min_price and max_price and min_val > max_val:
+                min_val, max_val = max_val, min_val
+                min_price, max_price = str(max_val), str(min_val)
+            
+            # Фильтруем товары
+            for product in products:
+                if min_val <= product['price'] <= max_val:
+                    filtered_products.append(product)
+                    
+            # Сохраняем в куки
+            resp = make_response(render_template('lab3/products.html',
+                                               products=products,
+                                               min_price=min_price,
+                                               max_price=max_price,
+                                               filtered_products=filtered_products,
+                                               min_all_price=min([p['price'] for p in products]),
+                                               max_all_price=max([p['price'] for p in products])))
+            if min_price:
+                resp.set_cookie('min_price', min_price)
+            if max_price:
+                resp.set_cookie('max_price', max_price)
+            return resp
+            
+        except ValueError:
+            # Если введены некорректные числа, показываем все товары
+            filtered_products = products
+    else:
+        # Проверяем куки
+        min_price_cookie = request.cookies.get('min_price')
+        max_price_cookie = request.cookies.get('max_price')
+        
+        if min_price_cookie or max_price_cookie:
+            # Используем значения из куки для поиска
+            min_price = min_price_cookie
+            max_price = max_price_cookie
+            
+            try:
+                min_val = float(min_price) if min_price else 0
+                max_val = float(max_price) if max_price else float('inf')
+                
+                if min_price and max_price and min_val > max_val:
+                    min_val, max_val = max_val, min_val
+                    min_price, max_price = str(max_val), str(min_val)
+                
+                for product in products:
+                    if min_val <= product['price'] <= max_val:
+                        filtered_products.append(product)
+            except ValueError:
+                filtered_products = products
+    
+    # Рассчитываем минимальную и максимальную цену
+    all_prices = [p['price'] for p in products]
+    min_all_price = min(all_prices)
+    max_all_price = max(all_prices)
+    
+    return render_template('lab3/products.html',
+                         products=products,
+                         min_price=min_price,
+                         max_price=max_price,
+                         filtered_products=filtered_products,
+                         min_all_price=min_all_price,
+                         max_all_price=max_all_price)
