@@ -134,6 +134,136 @@ def tree():
     return redirect('/lab4/tree')
 
 
+def check_auth():
+    """Проверяет, авторизован ли пользователь"""
+    return 'login' in session
+
+def get_current_user():
+    """Возвращает данные текущего пользователя"""
+    if 'login' in session:
+        for user in users:
+            if user['login'] == session['login']:
+                return user
+    return None
+
+
+@lab4.route('/lab4/register', methods=['GET', 'POST'])
+def register():
+    error = None
+    success = None
+    
+    if request.method == 'POST':
+        login = request.form.get('login')
+        password = request.form.get('password')
+        confirm_password = request.form.get('confirm_password')
+        name = request.form.get('name')
+        gender = request.form.get('gender')
+        
+        
+        if not all([login, password, confirm_password, name]):
+            error = 'Все поля обязательны для заполнения'
+        elif password != confirm_password:
+            error = 'Пароли не совпадают'
+        elif any(user['login'] == login for user in users):
+            error = 'Пользователь с таким логином уже существует'
+        else:
+            
+            users.append({
+                'login': login,
+                'password': password,
+                'name': name,
+                'gender': gender
+            })
+            success = 'Регистрация успешна! Теперь вы можете войти.'
+    
+    return render_template('lab4/register.html', error=error, success=success)
+
+@lab4.route('/lab4/users')
+def users_list():
+    
+    if not check_auth():
+        return redirect('/lab4/login')
+    
+    current_user = get_current_user()
+    
+   
+    users_safe = []
+    for user in users:
+        users_safe.append({
+            'login': user['login'],
+            'name': user['name'],
+            'gender': user.get('gender', ''),
+            'is_current': user['login'] == current_user['login']
+        })
+    
+    return render_template('lab4/users_list.html', users=users_safe, current_user=current_user)
+
+
+@lab4.route('/lab4/profile', methods=['GET', 'POST'])
+def profile():
+    
+    if not check_auth():
+        return redirect('/lab4/login')
+    
+    current_user = get_current_user()
+    error = None
+    success = None
+    
+    if request.method == 'POST':
+        new_login = request.form.get('login')
+        new_name = request.form.get('name')
+        new_gender = request.form.get('gender')
+        new_password = request.form.get('password')
+        confirm_password = request.form.get('confirm_password')
+        
+        
+        if not all([new_login, new_name]):
+            error = 'Логин и имя обязательны'
+        elif new_login != current_user['login'] and any(user['login'] == new_login for user in users):
+            error = 'Пользователь с таким логином уже существует'
+        elif new_password and new_password != confirm_password:
+            error = 'Пароли не совпадают'
+        else:
+            
+            for i, user in enumerate(users):
+                if user['login'] == current_user['login']:
+                    users[i]['login'] = new_login
+                    users[i]['name'] = new_name
+                    users[i]['gender'] = new_gender
+                    
+                    if new_password:
+                        users[i]['password'] = new_password
+                    break
+            
+            
+            session['login'] = new_login
+            session['name'] = new_name
+            
+            success = 'Профиль успешно обновлен'
+            current_user = get_current_user()  
+    
+    return render_template('lab4/profile.html', user=current_user, error=error, success=success)
+
+
+@lab4.route('/lab4/delete_profile', methods=['POST'])
+def delete_profile():
+    if not check_auth():
+        return redirect('/lab4/login')
+    
+    current_login = session['login']
+    
+    
+    global users
+    users = [user for user in users if user['login'] != current_login]
+    
+    
+    session.clear()
+    
+    return redirect('/lab4/register')
+
+
+
+
 @lab4.route('/lab4/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'GET':

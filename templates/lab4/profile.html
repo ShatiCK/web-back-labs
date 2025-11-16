@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block lab %}Редактирование профиля{% endblock %}
+
+{% block main %}
+    <h1>Редактирование профиля</h1>
+    
+    {% if success %}
+        <div style="color: green; font-weight: bold; margin-bottom: 20px;">
+            {{ success }}
+        </div>
+    {% endif %}
+    
+    <form method="post">
+        <div>
+            <label for="login">Логин:</label>
+            <input type="text" id="login" name="login" value="{{ user.login }}" required>
+        </div>
+        
+        <div>
+            <label for="name">Имя и фамилия:</label>
+            <input type="text" id="name" name="name" value="{{ user.name }}" required>
+        </div>
+        
+        <div>
+            <label>Пол:</label>
+            <input type="radio" id="male" name="gender" value="м" 
+                   {% if user.gender == 'м' %}checked{% endif %}>
+            <label for="male">Мужской</label>
+            <input type="radio" id="female" name="gender" value="ж"
+                   {% if user.gender == 'ж' %}checked{% endif %}>
+            <label for="female">Женский</label>
+        </div>
+        
+        <div>
+            <label for="password">Новый пароль (оставьте пустым, если не хотите менять):</label>
+            <input type="password" id="password" name="password">
+        </div>
+        
+        <div>
+            <label for="confirm_password">Подтверждение нового пароля:</label>
+            <input type="password" id="confirm_password" name="confirm_password">
+        </div>
+        
+        {% if error %}
+            <div style="color: red; font-weight: bold;">{{ error }}</div>
+        {% endif %}
+        
+        <div>
+            <button type="submit">Сохранить изменения</button>
+            <a href="/lab4/users" style="margin-left: 10px;">Назад к списку пользователей</a>
+        </div>
+    </form>
+{% endblock %}
