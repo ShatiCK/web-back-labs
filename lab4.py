@@ -170,3 +170,91 @@ def login():
 def logout():
     session.pop('login', None)  
     return redirect('/lab4/login')  
+
+@lab4.route('/lab4/fridge', methods=['GET', 'POST'])
+def fridge():
+    error = None
+    temperature = None
+    snowflakes = 0
+    
+    if request.method == 'POST':
+        temp_str = request.form.get('temperature')
+        
+        if not temp_str:
+            error = 'Ошибка: не задана температура'
+        else:
+            try:
+                temperature = int(temp_str)
+                
+                if temperature < -12:
+                    error = 'Не удалось установить температуру — слишком низкое значение'
+                elif temperature > -1:
+                    error = 'Не удалось установить температуру — слишком высокое значение'
+                elif -12 <= temperature <= -9:
+                    snowflakes = 3
+                elif -8 <= temperature <= -5:
+                    snowflakes = 2
+                elif -4 <= temperature <= -1:
+                    snowflakes = 1
+                    
+            except ValueError:
+                error = 'Ошибка: введите целое число'
+    
+    return render_template('lab4/fridge.html', 
+                         error=error, 
+                         temperature=temperature, 
+                         snowflakes=snowflakes)
+
+
+@lab4.route('/lab4/grain_order', methods=['GET', 'POST'])
+def grain_order():
+    error = None
+    result = None
+    discount = 0
+    
+    grains = {
+        'barley': {'name': 'ячмень', 'price': 12000},
+        'oats': {'name': 'овёс', 'price': 8500},
+        'wheat': {'name': 'пшеница', 'price': 9000},
+        'rye': {'name': 'рожь', 'price': 15000}
+    }
+    
+    if request.method == 'POST':
+        grain_type = request.form.get('grain_type')
+        weight_str = request.form.get('weight')
+        
+        if not grain_type:
+            error = 'Выберите тип зерна'
+        elif not weight_str:
+            error = 'Введите вес'
+        else:
+            try:
+                weight = float(weight_str)
+                
+                if weight <= 0:
+                    error = 'Вес должен быть больше 0'
+                elif weight > 100:
+                    error = 'Такого объёма сейчас нет в наличии'
+                else:
+                    grain = grains[grain_type]
+                    total = weight * grain['price']
+                    
+                    # Скидка за большой объем
+                    if weight > 10:
+                        discount = total * 0.1
+                        total -= discount
+                    
+                    result = {
+                        'grain': grain['name'],
+                        'weight': weight,
+                        'total': total,
+                        'discount': discount
+                    }
+                    
+            except ValueError:
+                error = 'Введите корректный вес'
+    
+    return render_template('lab4/grain_order.html', 
+                         error=error, 
+                         result=result, 
+                         grains=grains)
