@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block lab %}Лабораторная работа 5{% endblock %}
+
+{% block main %}
+    <h1>{% if login %}Статьи{% else %}Публичные статьи{% endif %}</h1>
+
+    {% if articles %}
+        {% for article in articles %}
+            <div class="article">
+                {% if article.is_favorite %}
+                    <div>Избранное</div>
+                {% endif %}
+                <h2>{{ article.title }}</h2>
+                <blockquote>{{ article.article_text }}</blockquote>
+                <div>
+                    Автор: {{ article.author }}
+                    {% if article.is_public %}
+                        (Публичная)
+                    {% else %}
+                        (Приватная)
+                    {% endif %}
+                </div>
+                {% if login and article.author == login %}
+                <div>
+                    <a href="/lab5/edit/{{ article.id }}">Редактировать</a>
+                    <a href="/lab5/delete/{{ article.id }}" onclick="return confirm('Вы уверены, что хотите удалить эту статью?')">Удалить</a>
+                </div>
+                {% endif %}
+            </div>
+        {% endfor %}
+    {% else %}
+        <p>{% if login %}У вас пока нет статей.{% else %}Нет публичных статей.{% endif %}</p>
+        {% if login %}
+            <a href="/lab5/create">Создать первую статью</a>
+        {% endif %}
+    {% endif %}
+
+    {% if login %}
+    <div>
+        <a href="/lab5/users">Список пользователей</a> |
+        <a href="/lab5/profile">Редактировать профиль</a> |
+        <a href="/lab5/logout">Выйти</a>
+    </div>
+    {% endif %}
+{% endblock %}
