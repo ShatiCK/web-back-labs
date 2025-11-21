@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, session, request, redirect, flash, current_app
+from flask import Blueprint, render_template, session, request, redirect, flash, current_app, url_for
 import psycopg2
 from psycopg2.extras import RealDictCursor
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -43,6 +43,11 @@ def lab():
     return render_template('lab5/lab5.html', username=username)
 
 
+@lab5.route('/lab5/logout')
+def logout():
+    session.pop('username', None)  
+    return redirect(url_for('lab5.lab'))  
+
 
 @lab5.route('/lab5/register', methods=['GET', 'POST'])
 def register():
@@ -79,9 +84,38 @@ def register():
 
 
 
-@lab5.route('/lab5/login')
+
+@lab5.route('/lab5/login', methods=['GET', 'POST'])
 def login():
-    return "Страница входа — скоро будет реализована"
+    if request.method == 'POST':
+        login = request.form.get('login')
+        password = request.form.get('password')
+
+        if not login or not password:
+            return render_template('lab5/login.html', error="Заполните все поля")
+
+        
+        conn, cur = db_connect()
+        
+        
+        cur.execute("SELECT login, password FROM users WHERE login = %s;", (login,))
+        user = cur.fetchone()
+
+        if user:
+            if user['password'] == password:  
+                session['username'] = login  
+                db_close(conn, cur)
+                return render_template('lab5/success_login.html', username=login)  
+            else:
+                db_close(conn, cur)
+                return render_template('lab5/login.html', error="Неверный пароль")
+        else:
+            db_close(conn, cur)
+            return render_template('lab5/login.html', error="Неверный логин")
+
+    return render_template('lab5/login.html')
+
+
 
 
 @lab5.route('/lab5/list')
