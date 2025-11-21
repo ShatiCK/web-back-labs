@@ -4,12 +4,16 @@ from lab1 import lab1
 from lab2 import lab2
 from lab3 import lab3
 from lab4 import lab4
+from lab5 import lab5
 app = Flask(__name__)
+app.config['DB_TYPE'] = 'postgres'
+app.secret_key = 'секретно-секретный ключ'
 app.secret_key = 'секретно-секретный ключ'
 app.register_blueprint(lab1)
 app.register_blueprint(lab2)
 app.register_blueprint(lab3)
 app.register_blueprint(lab4)
+app.register_blueprint(lab5)
 
 
 
@@ -32,6 +36,7 @@ def index():
                 <li><a href="''' + url_for('lab2.lab') + '''">Вторая лабораторная</a></li>
                 <li><a href="''' + url_for('lab3.lab') + '''">Третья лабораторная</a></li>
                 <li><a href="''' + url_for('lab4.lab') + '''">Четвертая лабораторная</a></li>
+                <li><a href="''' + url_for('lab5.lab') + '''">Пятая лабораторная</a></li>
             </menu>
         </main>
         <footer>
