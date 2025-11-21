@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block lab %}Лабораторная работа 5{% endblock %}
+
+{% block main %}
+    <div class="knowledge-base">
+        <h1>База знаний</h1>
+        
+        <nav class="top-menu">
+            <a href="/lab5/list" class="menu-item">Список статей</a>
+            {% if login %}
+                <a href="/lab5/create" class="menu-item">Создать статью</a>
+                <a href="/lab5/users" class="menu-item">Пользователи</a>
+                <a href="/lab5/profile" class="menu-item">Профиль</a>
+                <a href="/lab5/logout" class="menu-item">Выйти</a>
+                <div class="user-display">{{ login }}</div>
+            {% else %}
+                <a href="/lab5/login" class="menu-item">Войти</a>
+                <a href="/lab5/register" class="menu-item">Регистрация</a>
+                <div class="user-display">Anonymous</div>
+            {% endif %}
+        </nav>
+        
+        <div>
+            {% if login %}
+                <div>
+                    <h2>Добро пожаловать, {{ login }}!</h2>
+                    <p>Теперь вы можете создавать и просматривать статьи в базе знаний.</p>
+                </div>
+            {% else %}
+                <div>
+                    <h2>Добро пожаловать в базу знаний!</h2>
+                    <p>Для работы с системой необходимо войти или зарегистрироваться.</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

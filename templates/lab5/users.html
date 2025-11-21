@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block lab %}Лабораторная работа 5{% endblock %}
+
+{% block main %}
+    <h1>Зарегистрированные пользователи</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Логин</th>
+                <th>Полное имя</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+            <tr>
+                <td>{{ user.login }}</td>
+                <td>{{ user.full_name or 'Не указано' }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div>
+        <a href="/lab5">На главную</a>
+    </div>
+{% endblock %}
