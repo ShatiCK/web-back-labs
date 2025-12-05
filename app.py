@@ -40,6 +40,7 @@ def index():
                 <li><a href="''' + url_for('lab4.lab') + '''">Четвертая лабораторная</a></li>
                 <li><a href="''' + url_for('lab5.lab') + '''">Пятая лабораторная</a></li>
                 <li><a href="''' + url_for('lab6.main') + '''">Шестая лабораторная</a></li>
+                
             </menu>
         </main>
         <footer>
