@@ -1,0 +1,104 @@
+
+
+
+
+{% extends "base.html" %}
+{% block lab %}РГЗ • Профиль{% endblock %}
+
+{% block main %}
+<section class="rgz">
+  <div class="rgz__top">
+    <div>
+      <h1 class="rgz__title">Мой профиль</h1>
+      <p class="rgz__muted">Логин: <strong>{{ user.login }}</strong></p>
+    </div>
+
+    <div class="rgz__actions">
+      <a class="btn" href="{{ url_for('rgz.index') }}">На главную</a>
+      <a class="btn btn--primary" href="{{ url_for('rgz.profile_edit') }}">Редактировать</a>
+      <a class="btn" href="{{ url_for('rgz.logout') }}">Выход</a>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="kv">
+      <div class="kv__row">
+        <div class="kv__key">Имя</div>
+        <div class="kv__val">{{ user.name or "Не указано" }}</div>
+      </div>
+      <div class="kv__row">
+        <div class="kv__key">Услуга</div>
+        <div class="kv__val">{{ (user.service or "Не указано")|capitalize }}</div>
+      </div>
+      <div class="kv__row">
+        <div class="kv__key">Стаж</div>
+        <div class="kv__val">{{ user.experience }} лет</div>
+      </div>
+      <div class="kv__row">
+        <div class="kv__key">Цена</div>
+        <div class="kv__val">{{ user.price }} ₽</div>
+      </div>
+      <div class="kv__row kv__row--top">
+        <div class="kv__key">О себе</div>
+        <div class="kv__val">{{ user.about or "Не указано" }}</div>
+      </div>
+      <div class="kv__row">
+        <div class="kv__key">Статус анкеты</div>
+        <div class="kv__val">
+          {% if user.is_hidden %}
+            <span class="pill pill--warn">Скрыта</span>
+          {% else %}
+            <span class="pill pill--ok">Видима</span>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <div class="card__footer">
+      <form method="post" action="{{ url_for('rgz.profile_toggle_hide') }}">
+        <button class="btn" type="submit">
+          {% if user.is_hidden %}Показать анкету{% else %}Скрыть анкету{% endif %}
+        </button>
+      </form>
+
+      <form method="post" action="{{ url_for('rgz.account_delete') }}" onsubmit="return confirm('Точно удалить аккаунт?');">
+        <button class="btn btn--danger" type="submit">Удалить аккаунт</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<style>
+  .rgz { max-width: 980px; margin: 0 auto; }
+  .rgz__top { display:flex; gap:16px; align-items:flex-start; justify-content:space-between; margin-bottom:16px; }
+  .rgz__title { margin: 0 0 6px 0; font-size: 28px; }
+  .rgz__muted { margin: 0; opacity: .75; }
+  .rgz__actions { display:flex; gap:10px; flex-wrap:wrap; justify-content:flex-end; }
+
+  .card { background:#fff; border:1px solid rgba(0,0,0,.08); border-radius:12px; padding:16px; box-shadow: 0 2px 10px rgba(0,0,0,.04); }
+  .card__footer { display:flex; justify-content:space-between; gap:12px; margin-top: 14px; flex-wrap:wrap; }
+
+  .btn { display:inline-block; padding:10px 14px; border-radius:10px; border:1px solid rgba(0,0,0,.12); background:#fff; text-decoration:none; color:inherit; cursor:pointer; }
+  .btn:hover { border-color: rgba(0,0,0,.25); }
+  .btn--primary { background:#111; color:#fff; border-color:#111; }
+  .btn--primary:hover { opacity: .92; }
+  .btn--danger { background: rgba(220,53,69,.12); border-color: rgba(220,53,69,.35); }
+  .btn--danger:hover { border-color: rgba(220,53,69,.55); }
+
+  .kv { display:flex; flex-direction:column; gap:10px; }
+  .kv__row { display:grid; grid-template-columns: 180px 1fr; gap:12px; padding:10px; border:1px dashed rgba(0,0,0,.10); border-radius:10px; }
+  .kv__row--top { align-items:flex-start; }
+  .kv__key { font-size: 13px; opacity:.75; }
+  .kv__val { font-weight: 600; }
+
+  .pill { display:inline-block; padding:6px 10px; border-radius:999px; font-size: 12px; font-weight:700; }
+  .pill--ok { background: rgba(25,135,84,.12); border:1px solid rgba(25,135,84,.25); }
+  .pill--warn { background: rgba(255,193,7,.18); border:1px solid rgba(255,193,7,.35); }
+
+  @media (max-width: 700px) {
+    .kv__row { grid-template-columns: 1fr; }
+    .rgz__top { flex-direction: column; }
+    .rgz__actions { justify-content:flex-start; }
+  }
+</style>
+{% endblock %}

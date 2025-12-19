@@ -1,0 +1,58 @@
+
+
+
+
+
+{% extends "base.html" %}
+{% block lab %}РГЗ • Регистрация{% endblock %}
+
+{% block main %}
+<section class="rgz rgz--narrow">
+  <h1 class="rgz__title">Регистрация</h1>
+  <p class="rgz__muted">Логин и пароль: латиница, цифры, знаки. Пароль хранится в виде хеша.</p>
+
+  {% if error %}
+    <div class="alert alert--danger">{{ error }}</div>
+  {% endif %}
+
+  <form method="post" class="card form">
+    <div class="field">
+      <label class="label">Логин</label>
+      <input class="input" name="login" placeholder="например: nikita_33" required>
+    </div>
+
+    <div class="field">
+      <label class="label">Пароль</label>
+      <input class="input" type="password" name="password" placeholder="минимум 6 символов" required>
+    </div>
+
+    <div class="form__footer">
+      <button class="btn btn--primary" type="submit">Создать аккаунт</button>
+      <a class="btn" href="{{ url_for('rgz.login') }}">Уже есть аккаунт</a>
+    </div>
+  </form>
+</section>
+
+<style>
+  .rgz { max-width: 980px; margin: 0 auto; }
+  .rgz--narrow { max-width: 520px; }
+  .rgz__title { margin: 0 0 6px 0; font-size: 28px; }
+  .rgz__muted { margin: 0 0 14px 0; opacity: .75; }
+
+  .card { background:#fff; border:1px solid rgba(0,0,0,.08); border-radius:12px; padding:16px; box-shadow: 0 2px 10px rgba(0,0,0,.04); }
+  .form { display:flex; flex-direction:column; gap:12px; }
+  .field { display:flex; flex-direction:column; gap:6px; }
+  .label { font-size: 13px; opacity:.8; }
+  .input { padding:10px 12px; border-radius:10px; border:1px solid rgba(0,0,0,.12); }
+  .input:focus { outline:none; border-color: rgba(0,0,0,.35); }
+
+  .form__footer { display:flex; gap:10px; justify-content:flex-end; flex-wrap:wrap; margin-top: 4px; }
+  .btn { display:inline-block; padding:10px 14px; border-radius:10px; border:1px solid rgba(0,0,0,.12); background:#fff; text-decoration:none; color:inherit; }
+  .btn--primary { background:#111; color:#fff; border-color:#111; }
+  .btn:hover { border-color: rgba(0,0,0,.25); }
+  .btn--primary:hover { opacity: .92; }
+
+  .alert { padding: 12px 14px; border-radius: 10px; margin: 12px 0; border: 1px solid; }
+  .alert--danger { background: rgba(220, 53, 69, .08); border-color: rgba(220, 53, 69, .35); }
+</style>
+{% endblock %}
