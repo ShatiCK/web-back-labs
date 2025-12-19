@@ -8,14 +8,14 @@ import tempfile
 
 rgz = Blueprint("rgz", __name__, url_prefix="/rgz")
 
-# ---- Параметры отображения (на каждой странице) ----
+
 STUDENT_FIO = "Шатравский Никита Дмитриевич"
 STUDENT_GROUP = "ФБИ-33"
 
-# ---- Справочник услуг ----
+
 SERVICE_TYPES = ["репетитор", "бухгалтер", "программист", "дизайнер", "юрист"]
 
-# ---- JSON хранилище ----
+
 BASE_DIR = os.path.dirname(__file__)
 DATA_PATH = os.path.join(BASE_DIR, "storage", "data.json")
 
@@ -30,14 +30,14 @@ def load_data_from_file():
             return None
         return data
     except Exception:
-        # Если файл повреждён/пустой — игнорируем и пересоздадим данные
+        
         return None
 
 
 def save_data_to_file(data: dict):
     os.makedirs(os.path.dirname(DATA_PATH), exist_ok=True)
 
-    # атомарная запись: сначала во временный файл, затем replace
+    
     fd, tmp_path = tempfile.mkstemp(dir=os.path.dirname(DATA_PATH), suffix=".json")
     try:
         with os.fdopen(fd, "w", encoding="utf-8") as f:
@@ -56,7 +56,7 @@ DATA = {
     "next_user_id": 1
 }
 
-# ---- Валидация логина/пароля (латиница, цифры, знаки) ----
+
 LOGIN_RE = re.compile(r"^[A-Za-z0-9_!@#$%^&*().-]{3,32}$")
 PASS_RE = re.compile(r"^[A-Za-z0-9_!@#$%^&*().-]{6,64}$")
 
@@ -83,19 +83,19 @@ def seed_if_empty():
     if loaded and loaded.get("users"):
         DATA["users"] = loaded["users"]
 
-        # минимальная нормализация структуры
+        
         for u in DATA["users"]:
-            # на всякий: id/int
+            
             try:
                 u["id"] = int(u.get("id", 0))
             except Exception:
                 pass
 
-            # если вдруг кто-то сохранил password (не нужно) — убираем
+            
             if "password" in u:
                 u.pop("password", None)
 
-            # гарантируем наличие ключей
+            
             u.setdefault("role", "user")
             u.setdefault("name", "")
             u.setdefault("service", "")
@@ -105,7 +105,7 @@ def seed_if_empty():
             u.setdefault("is_hidden", False)
             u.setdefault("created_at", "")
 
-        # next_user_id может отсутствовать — восстановим
+        
         if loaded.get("next_user_id"):
             try:
                 DATA["next_user_id"] = int(loaded["next_user_id"])
@@ -116,9 +116,9 @@ def seed_if_empty():
 
         return
 
-    # --- Если файла нет: создаём стартовые данные ---
+    
 
-    # Админ
+    
     admin = {
         "id": DATA["next_user_id"],
         "login": "admin",
@@ -135,7 +135,7 @@ def seed_if_empty():
     DATA["users"].append(admin)
     DATA["next_user_id"] += 1
 
-    # 30 специалистов
+    
     for i in range(1, 31):
         u = {
             "id": DATA["next_user_id"],
@@ -144,8 +144,8 @@ def seed_if_empty():
             "role": "user",
             "name": f"Пользователь {i}",
             "service": SERVICE_TYPES[i % len(SERVICE_TYPES)],
-            "experience": (i % 15) + 1,        # 1..15
-            "price": 500 + (i % 10) * 250,     # 500..2750
+            "experience": (i % 15) + 1,        
+            "price": 500 + (i % 10) * 250,     
             "about": "Краткое описание специалиста.",
             "is_hidden": False,
             "created_at": datetime.now().isoformat(timespec="seconds")
@@ -201,7 +201,7 @@ def to_float(s, default=None):
 def index():
     """Главная страница: поиск + выдача анкет (не более 5 за раз)."""
 
-    # фильтры
+    
     q_name = (request.args.get("name") or "").strip().lower()
     q_service = (request.args.get("service") or "").strip().lower()
     exp_from = to_int(request.args.get("exp_from"), None)
@@ -209,11 +209,11 @@ def index():
     price_from = to_float(request.args.get("price_from"), None)
     price_to = to_float(request.args.get("price_to"), None)
 
-    # пагинация
+    
     page = max(to_int(request.args.get("page"), 1) or 1, 1)
     per_page = 5
 
-    # список анкет: только user и не скрытые
+    
     users = [u for u in DATA["users"] if u.get("role") == "user" and not u.get("is_hidden")]
 
     if q_name:
@@ -455,7 +455,7 @@ def account_delete():
     return redirect(url_for("rgz.index"))
 
 
-# ---------------------- Админка ----------------------
+
 
 @rgz.route("/admin/users")
 def admin_users():
@@ -481,7 +481,7 @@ def admin_user_delete(user_id):
     if not admin_required():
         abort(403)
 
-    # запретим удалить самого себя
+    
     if session.get("user_id") == user_id:
         abort(400)
 
