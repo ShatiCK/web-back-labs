@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block lab %}Лабораторная работа 9 - Регистрация{% endblock %}
+
+{% block main %}
+<h1>Регистрация</h1>
+
+{% if error %}
+<div style="color: red; padding: 10px; background: #ffe6e6; border: 1px solid red; margin: 10px 0;">
+    {{ error }}
+</div>
+{% endif %}
+
+<form method="post" action="/lab9/register" style="max-width: 400px; margin: 20px auto;">
+    <div style="margin-bottom: 15px;">
+        <label style="display: block; margin-bottom: 5px;">Имя пользователя:</label>
+        <input type="text" name="username" required style="width: 100%; padding: 8px; box-sizing: border-box;">
+        <small>Не менее 3 символов</small>
+    </div>
+    
+    <div style="margin-bottom: 15px;">
+        <label style="display: block; margin-bottom: 5px;">Пароль:</label>
+        <input type="password" name="password" required style="width: 100%; padding: 8px; box-sizing: border-box;">
+        <small>Не менее 4 символов</small>
+    </div>
+    
+    <button type="submit" style="background: #4CAF50; color: white; border: none; padding: 10px 20px; cursor: pointer;">
+        Зарегистрироваться
+    </button>
+    
+    <a href="/lab9/login" style="margin-left: 20px;">Вход</a>
+</form>
+
+<div style="text-align: center; margin-top: 20px;">
+    <a href="/lab9/">Назад к игре</a>
+</div>
+{% endblock %}
