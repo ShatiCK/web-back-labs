@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block lab %}Лабораторная работа 8 - Поиск статей{% endblock %}
+
+{% block main %}
+    <h1>Поиск статей</h1>
+    
+    {% if error %}
+        <div>
+            <strong>Ошибка:</strong> {{ error }}
+        </div>
+    {% endif %}
+    
+    <form action="/lab8/articles/search/" method="post">
+        <div>
+            <label>
+                Поисковый запрос: <br>
+                <input type="text" name="search_query" required style="width: 300px;">
+            </label>
+        </div>
+        
+        <button type="submit">Искать</button>
+        <a href="/lab8/" style="margin-left: 10px;">На главную</a>
+        {% if current_user.is_authenticated %}
+            <a href="/lab8/articles/" style="margin-left: 10px;">Мои статьи</a>
+        {% endif %}
+        <a href="/lab8/articles/public/" style="margin-left: 10px;">Публичные статьи</a>
+    </form>
+    
+    <div style="margin-top: 20px;">
+        <p>Поиск регистронезависимый - "привет" найдет "Привет", "ПРИВЕТ" и т.д.</p>
+        
+        {% if current_user.is_authenticated %}
+            <p>Вы увидите: свои статьи (любые) + публичные статьи других пользователей.</p>
+        {% else %}
+            <p>Вы увидите только публичные статьи.</p>
+        {% endif %}
+    </div>
+{% endblock %}

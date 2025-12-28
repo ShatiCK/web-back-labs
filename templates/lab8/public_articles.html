@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block lab %}Лабораторная работа 8 - Публичные статьи{% endblock %}
+
+{% block main %}
+    <h1>Публичные статьи</h1>
+    
+    <p><a href="/lab8/">На главную</a> | <a href="/lab8/articles/search/">Поиск статей</a></p>
+    
+    {% if articles %}
+        <p>Найдено публичных статей: {{ articles|length }}</p>
+        
+        <ul>
+            {% for article in articles %}
+                <li style="margin-bottom: 20px; border: 1px solid #ccc; padding: 15px;">
+                    <h3>{{ article.title }}</h3>
+                    <p>{{ article.article_text[:200] }}{% if article.article_text|length > 200 %}...{% endif %}</p>
+                    
+                    {% if current_user.is_authenticated %}
+                        {% set article_author = users.query.get(article.login_id) %}
+                        <p><small>Автор: {{ article_author.login if article_author else 'Неизвестен' }}</small></p>
+                    {% endif %}
+                    
+                    <p>
+                        <small>
+                            Лайков: {{ article.likes }} | 
+                            Избранное: {% if article.is_favorite %}Да{% else %}Нет{% endif %}
+                        </small>
+                    </p>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>Публичные статьи не найдены.</p>
+    {% endif %}
+{% endblock %}

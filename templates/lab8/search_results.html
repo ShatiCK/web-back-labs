@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block lab %}Лабораторная работа 8 - Результаты поиска{% endblock %}
+
+{% block main %}
+    <h1>Результаты поиска</h1>
+    
+    <p>Запрос: "<strong>{{ search_query }}</strong>"</p>
+    <p>Найдено статей: {{ results_count }}</p>
+    
+    <p>
+        <a href="/lab8/articles/search/">Новый поиск</a> | 
+        <a href="/lab8/">На главную</a> |
+        <a href="/lab8/articles/public/">Публичные статьи</a>
+        {% if current_user.is_authenticated %}
+            | <a href="/lab8/articles/">Мои статьи</a>
+        {% endif %}
+    </p>
+    
+    {% if articles %}
+        <ul>
+            {% for article in articles %}
+                <li style="margin-bottom: 20px; border: 1px solid #ccc; padding: 15px;">
+                    <h3>{{ article.title }}</h3>
+                    <p>{{ article.article_text[:200] }}{% if article.article_text|length > 200 %}...{% endif %}</p>
+                    
+                    <p>
+                        <small>
+                            {% if current_user.is_authenticated %}
+                                {% set article_author = users.query.get(article.login_id) %}
+                                Автор: {{ article_author.login if article_author else 'Неизвестен' }} |
+                            {% endif %}
+                            Лайков: {{ article.likes }} | 
+                            Избранное: {% if article.is_favorite %}Да{% else %}Нет{% endif %} | 
+                            Публичная: {% if article.is_public %}Да{% else %}Нет{% endif %}
+                        </small>
+                    </p>
+                    
+                    {% if current_user.is_authenticated and article.login_id == current_user.id %}
+                        <p>
+                            <a href="/lab8/articles/{{ article.id }}/edit/">Редактировать</a> | 
+                            <form action="/lab8/articles/{{ article.id }}/delete/" method="post" style="display: inline;">
+                                <button type="submit" 
+                                        onclick="return confirm('Вы уверены, что хотите удалить эту статью?')"
+                                        style="background: red; color: white; border: none; padding: 5px 10px; cursor: pointer;">
+                                    Удалить
+                                </button>
+                            </form>
+                        </p>
+                    {% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>По вашему запросу ничего не найдено.</p>
+    {% endif %}
+{% endblock %}

@@ -1,6 +1,43 @@
 from flask import Flask, url_for, request, redirect, abort, render_template, session
 import os
 from datetime import datetime
+
+# Импортируем Flask-Login ДО создания приложения
+from flask_login import LoginManager
+
+app = Flask(__name__)
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'секретно-секретный секрет')
+
+# Конфигурация базы данных (используем SQLite)
+basedir = os.path.abspath(os.path.dirname(__file__))
+app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{os.path.join(basedir, "site.db")}'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+# Инициализируем Flask-Login
+login_manager = LoginManager()
+login_manager.init_app(app)  # КРИТИЧЕСКИ ВАЖНО!
+login_manager.login_view = 'lab8.login'
+login_manager.login_message = 'Пожалуйста, войдите для доступа к этой странице.'
+login_manager.login_message_category = 'info'
+
+# Импортируем базу данных
+from db import db
+from db.models import users
+
+# Инициализируем базу данных
+db.init_app(app)
+
+# Функция для загрузки пользователя (ОБЯЗАТЕЛЬНО!)
+@login_manager.user_loader
+def load_user(user_id):
+    return users.query.get(int(user_id))
+
+# Создаем таблицы
+with app.app_context():
+    db.create_all()
+    print("База данных создана!")
+
+# Теперь импортируем и регистрируем blueprints
 from lab1 import lab1
 from lab2 import lab2
 from lab3 import lab3
@@ -8,11 +45,9 @@ from lab4 import lab4
 from lab5 import lab5
 from lab6 import lab6
 from lab7 import lab7
-from rgz import rgz  
+from lab8 import lab8
+from rgz import rgz
 
-app = Flask(__name__)
-app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'секретно-секретный секрет')
-app.config['DB_TYPE'] = os.getenv('DB_TYPE', 'postgres')
 app.register_blueprint(lab1)
 app.register_blueprint(lab2)
 app.register_blueprint(lab3)
@@ -20,6 +55,7 @@ app.register_blueprint(lab4)
 app.register_blueprint(lab5)
 app.register_blueprint(lab6)
 app.register_blueprint(lab7)
+app.register_blueprint(lab8)
 app.register_blueprint(rgz)
 
 
@@ -46,6 +82,7 @@ def index():
                 <li><a href="''' + url_for('lab5.lab') + '''">Пятая лабораторная</a></li>
                 <li><a href="''' + url_for('lab6.main') + '''">Шестая лабораторная</a></li>
                 <li><a href="''' + url_for('lab7.lab') + '''">Седьмая лабораторная</a></li>
+                <li><a href="''' + url_for('lab8.lab') + '''">Восьмая лабораторная</a></li>
                 <li><a href="''' + url_for('rgz.index') + '''">РГЗ</a></li>
                 
             </menu>
